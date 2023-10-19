@@ -1,18 +1,58 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<div>
+  <h1>stox</h1>
+  <form on:submit={submit}>
+    <input type="text" placeholder="Username" bind:value={username} />
+    <input type="password" placeholder="Password" bind:value={password} />
+    <input type="submit" value="Sign in" />
+  </form>
+  <p>{text}</p>
+</div>
 
-<button on:click={() => sayHello()} >Say Hello</button>
-<p>{text}</p>
+<style>
+    div {
+        display: flex;
+        position: relative;
+        flex-direction: column;
+        align-items: center;
+        width: 350px;
+        border-radius: 5px;
+        padding: 1rem;
+        margin: 0 auto;
+        top: 50vh;
+        transform: translateY(-50%);
+        text-align: center;
+        background-color: var(--primary-color);
+        color: white;
+    }
 
-<script lang="ts ">
-  import { invoke } from "@tauri-apps/api/tauri";
+    form > input {
+        display: block;
+        margin: 0.5rem 0;
+        padding: .5rem;
+    }
 
-  let text = "Test Text!"
+    form > input[type=submit] {
+        width: 100%;
+    }
+</style>
 
-  function sayHello() {
-    console.log("Attempting to say hello!");
-    invoke('send_tcp_message', { message: 'Hello!' }).then(r => {
-      text = r;
-    })
+<script lang="ts">
+  import { Authenticate } from "$lib/services/auth";
+  import { token } from "$lib/state/tokenStore";
+  import { goto } from "$app/navigation";
+
+  let username = "";
+  let password = "";
+  let text: string = "";
+
+  function submit() {
+    Authenticate(username, password)
+      .then(t => {
+        token.set(t);
+        goto("/supplier");
+      })
+      .catch(e => {
+        text = e.message;
+      });
   }
 </script>
