@@ -1,5 +1,6 @@
 <div class="filters">
   <h1>Products</h1>
+  <PrimaryButton on:click={() => createProductModalVisible = true}>Create new product</PrimaryButton>
   <p>Sort by:</p>
   <select bind:value={sort} on:change={updateProducts}>
     <option value="name" selected>Name</option>
@@ -33,11 +34,14 @@
   </PrimaryButton>
 </div>
 
+<CreateProductModal bind:visible={createProductModalVisible} on:created={updateProducts} />
+
 <script lang="ts">
   import { onMount } from "svelte";
   import { GetProduct, SearchProducts } from "$lib/services/product";
   import type Product from "$lib/models/product/product";
   import PrimaryButton from "../../../components/buttons/PrimaryButton.svelte";
+  import CreateProductModal from "../../../components/CreateProductModal.svelte";
 
   let pageNumber = 1;
   let pageSize = 15;
@@ -45,6 +49,8 @@
   let sortDirection = "asc";
 
   let products: Product[] = [];
+
+  let createProductModalVisible = false;
 
   onMount(() => {
     updateProducts();
@@ -74,12 +80,16 @@
         align-items: center;
     }
 
+    .filters p, h1 {
+        margin: 0;
+    }
+
     .filters h1 {
-        margin: 0 auto 0 0;
+        margin-right: 1rem;
     }
 
     .filters p {
-        margin: 0;
+        margin-left: auto;
     }
 
     .filters select {
