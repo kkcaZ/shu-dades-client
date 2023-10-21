@@ -1,9 +1,9 @@
 import { invoke } from '@tauri-apps/api/tauri';
-import type { AuthRequest } from '$lib/models/auth';
-import type { BaseRequest } from '$lib/models/baseRequest';
-import type { BaseResponse } from '$lib/models/baseResponse';
-import type { ErrorResponse } from '$lib/models/errorResponse';
-import type { AuthResponse } from '$lib/models/authResponse';
+import type { AuthRequest } from '$lib/models/auth/auth';
+import type { BaseRequest } from '$lib/models/request/baseRequest';
+import type { BaseResponse } from '$lib/models/request/baseResponse';
+import type { ErrorResponse } from '$lib/models/request/errorResponse';
+import type { AuthResponse } from '$lib/models/auth/authResponse';
 
 export async function Authenticate(username: string, password: string): Promise<string> {
 	let body: AuthRequest = {

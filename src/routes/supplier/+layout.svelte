@@ -19,6 +19,7 @@
 <div class="page">
   <nav>
     <NavButton on:click={() => goto("/supplier")}>Dashboard</NavButton>
+    <NavButton on:click={() => goto("/supplier/products")}>Products</NavButton>
     <NavButton on:click={logout}>Log out</NavButton>
   </nav>
   <main>
@@ -36,6 +37,17 @@
         flex-direction: column;
         height: 100vh;
         width: 300px;
+        background-color: var(--secondary-color);
+    }
+
+    main {
+        flex-grow: 1;
+        padding: 1rem;
         background-color: var(--primary-color);
+        color: white;
+        height: 100vh;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
     }
 </style>

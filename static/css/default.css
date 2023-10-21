@@ -1,7 +1,12 @@
 :root {
-    --primary-color: #242934;
+    --primary-color: #2A303C;
+    --secondary-color: #20252E;
 }
 
 body {
     margin: 0;
+}
+
+* {
+    box-sizing: border-box;
 }

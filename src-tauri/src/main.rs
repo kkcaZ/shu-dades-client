@@ -29,7 +29,7 @@ fn send_tcp_message(message: String) -> String {
     let mut stream = TcpStream::connect("localhost:8080").unwrap();
     stream.write(&message.as_bytes()).unwrap();
 
-    let mut buffer = [0; 128];
+    let mut buffer = [0; 4096];
     stream.read(&mut buffer).unwrap();
     let response = String::from_utf8_lossy(&buffer[..]);
     let response = response.trim_end_matches(char::from(0));
