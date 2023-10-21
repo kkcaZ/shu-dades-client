@@ -30,7 +30,7 @@
         cursor: default;
     }
 
-    button:hover {
+    button:hover:not(:disabled) {
         opacity: 0.8;
     }
 </style>

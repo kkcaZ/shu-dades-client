@@ -15,9 +15,14 @@
 <div class="table">
   <p>Name</p>
   <p>Quantity</p>
+  <p>Actions</p>
   {#each products as product}
     <p>{product.name}</p>
     <p>{product.quantity}</p>
+    <div class="actions">
+      <span><img src="/icons/edit.svg" alt="edit" /></span>
+      <span on:click={() => deleteProduct(product.id)}><img src="/icons/delete.svg" alt="delete" /></span>
+    </div>
   {/each}
 </div>
 
@@ -38,7 +43,7 @@
 
 <script lang="ts">
   import { onMount } from "svelte";
-  import { GetProduct, SearchProducts } from "$lib/services/product";
+  import { DeleteProduct, GetProduct, SearchProducts } from "$lib/services/product";
   import type Product from "$lib/models/product/product";
   import PrimaryButton from "../../../components/buttons/PrimaryButton.svelte";
   import CreateProductModal from "../../../components/CreateProductModal.svelte";
@@ -71,6 +76,12 @@
       products = p;
     });
   }
+
+  function deleteProduct(id: number) {
+    DeleteProduct(id).then(() => {
+      updateProducts();
+    });
+  }
 </script>
 
 <style>
@@ -99,7 +110,7 @@
 
     .table {
         display: grid;
-        grid-template-columns: 5fr 1fr;
+        grid-template-columns: 10fr 2fr 1fr;
         grid-gap: .5rem;
         margin-bottom: 1rem;
     }
@@ -117,5 +128,20 @@
         flex-direction: row;
         justify-content: space-between;
         margin-top: auto;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .actions > span {
+        cursor: pointer;
+    }
+
+    .actions > span > img {
+        width: 1.25rem;
+        height: 1.25rem;
     }
 </style>

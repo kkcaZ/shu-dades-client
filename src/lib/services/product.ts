@@ -85,6 +85,25 @@ export async function CreateProduct(product: CreateProductRequest): Promise<void
 		let errorResponse = parsedResponse as ErrorResponse;
 		throw new Error(errorResponse.message);
 	}
+}
 
-	return;
+export async function DeleteProduct(id: number): Promise<void> {
+	const body: RequestById = {
+		id: id
+	};
+
+	let request: BaseRequest = {
+		body: body,
+		type: 'DELETE',
+		route: '/product',
+		headers: "{'Content-Type': 'application/json'}"
+	};
+
+	let response = await invoke('send_tcp_message', { message: JSON.stringify(request) });
+	let parsedResponse = JSON.parse(response as string);
+
+	if ((parsedResponse as BaseResponse).statusCode != 200) {
+		let errorResponse = parsedResponse as ErrorResponse;
+		throw new Error(errorResponse.message);
+	}
 }
