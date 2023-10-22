@@ -47,9 +47,13 @@
 
   function submit() {
     Authenticate(username, password)
-      .then(t => {
-        token.set(t);
-        goto("/supplier");
+      .then(claim => {
+        token.set(claim.token);
+        if (claim.role === "supplier") {
+          goto("/supplier");
+        } else if (claim.role === "customer") {
+          goto("/customer");
+        }
       })
       .catch(e => {
         text = e.message;

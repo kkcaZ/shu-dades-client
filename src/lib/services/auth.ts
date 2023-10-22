@@ -4,8 +4,9 @@ import type { BaseRequest } from '$lib/models/request/baseRequest';
 import type { BaseResponse } from '$lib/models/request/baseResponse';
 import type { ErrorResponse } from '$lib/models/request/errorResponse';
 import type { AuthResponse } from '$lib/models/auth/authResponse';
+import type UserClaim from '$lib/models/auth/userClaim';
 
-export async function Authenticate(username: string, password: string): Promise<string> {
+export async function Authenticate(username: string, password: string): Promise<UserClaim> {
 	let body: AuthRequest = {
 		username: username,
 		password: password
@@ -27,5 +28,5 @@ export async function Authenticate(username: string, password: string): Promise<
 	}
 
 	let successResponse = parsedResponse as AuthResponse;
-	return successResponse.token;
+	return successResponse.userClaim;
 }

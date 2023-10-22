@@ -14,10 +14,9 @@
 
 <script lang="ts">
   import PrimaryButton from "./buttons/PrimaryButton.svelte";
-  import { CreateProduct } from "$lib/services/product";
-  import type Product from "$lib/models/product/product";
   import { createEventDispatcher } from "svelte";
   import type CreateProductRequest from "$lib/models/product/createProductRequest";
+  import { CreateProduct } from "$lib/services/product";
 
   export let visible: boolean = false;
   const dispatch = createEventDispatcher();
@@ -66,11 +65,13 @@
         flex-direction: column;
     }
 
-    input {
+    form > input {
         margin-top: 0;
         border: none;
         outline: none;
         color: white;
+        padding: 1rem;
+        margin-bottom: .5rem;
         background-color: var(--secondary-color);
     }
 
