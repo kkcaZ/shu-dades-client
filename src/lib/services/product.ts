@@ -9,7 +9,7 @@ import type SearchRequest from '$lib/models/request/searchRequest';
 import type ProductListResponse from '$lib/models/product/productListResponse';
 import type CreateProductRequest from '$lib/models/product/createProductRequest';
 
-export async function GetProduct(id: number): Promise<Product> {
+export async function GetProduct(id: string): Promise<Product> {
 	const body: RequestById = {
 		id: id
 	};
@@ -18,7 +18,7 @@ export async function GetProduct(id: number): Promise<Product> {
 		body: body,
 		type: 'GET',
 		route: '/product',
-		headers: "{'Content-Type': 'application/json'}"
+		headers: {}
 	};
 
 	let response = await invoke('send_tcp_message', { message: JSON.stringify(request) });
@@ -50,7 +50,7 @@ export async function SearchProducts(
 		body: body,
 		type: 'GET',
 		route: '/product/search',
-		headers: "{'Content-Type': 'application/json'}"
+		headers: {}
 	};
 
 	let response = await invoke('send_tcp_message', { message: JSON.stringify(request) });
@@ -75,7 +75,7 @@ export async function CreateProduct(product: CreateProductRequest): Promise<void
 		body: product,
 		type: 'POST',
 		route: '/product',
-		headers: "{'Content-Type': 'application/json'}"
+		headers: {}
 	};
 
 	let response = await invoke('send_tcp_message', { message: JSON.stringify(request) });
@@ -87,7 +87,7 @@ export async function CreateProduct(product: CreateProductRequest): Promise<void
 	}
 }
 
-export async function DeleteProduct(id: number): Promise<void> {
+export async function DeleteProduct(id: string): Promise<void> {
 	const body: RequestById = {
 		id: id
 	};
@@ -96,7 +96,7 @@ export async function DeleteProduct(id: number): Promise<void> {
 		body: body,
 		type: 'DELETE',
 		route: '/product',
-		headers: "{'Content-Type': 'application/json'}"
+		headers: {}
 	};
 
 	let response = await invoke('send_tcp_message', { message: JSON.stringify(request) });

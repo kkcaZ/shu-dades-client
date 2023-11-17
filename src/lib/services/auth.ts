@@ -16,7 +16,7 @@ export async function Authenticate(username: string, password: string): Promise<
 		body: body,
 		type: 'POST',
 		route: '/auth',
-		headers: "{'Content-Type': 'application/json'}"
+		headers: {}
 	};
 
 	let response = await invoke('send_tcp_message', { message: JSON.stringify(request) });

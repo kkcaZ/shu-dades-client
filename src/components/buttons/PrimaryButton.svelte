@@ -16,6 +16,7 @@
 
 <style>
     button {
+        display: block;
         background: var(--secondary-color);
         border: none;
         border-radius: 4px;

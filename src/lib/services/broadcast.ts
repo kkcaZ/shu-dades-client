@@ -13,7 +13,7 @@ export async function Publish(message: string) {
 		body: body,
 		type: 'POST',
 		route: '/broadcast',
-		headers: "{'Content-Type': 'application/json'}"
+		headers: {}
 	};
 
 	let response = await invoke('send_tcp_message', { message: JSON.stringify(request) });

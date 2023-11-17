@@ -1,6 +1,7 @@
 <nav>
   <h2>stox</h2>
-  <h2>Customer Dashboard</h2>
+  <h2 class="header">Customer Dashboard</h2>
+  <Notifications />
   <PrimaryButton on:click={logout}>Log out</PrimaryButton>
 </nav>
 
@@ -12,6 +13,7 @@
   import PrimaryButton from "../../components/buttons/PrimaryButton.svelte";
   import { token } from "$lib/state/tokenStore";
   import { goto } from "$app/navigation";
+  import Notifications from "../../components/buttons/Notifications.svelte";
 
   function logout() {
     token.set("");
@@ -22,15 +24,19 @@
 <style>
     nav {
         display: flex;
-        justify-content: space-between;
         width: 100%;
         padding: 1rem;
         background-color: var(--primary-color);
         color: white;
+        align-items: center;
     }
 
     nav h2 {
         margin: 0;
+    }
+
+    nav .header {
+        margin-inline: auto;
     }
 
     main {

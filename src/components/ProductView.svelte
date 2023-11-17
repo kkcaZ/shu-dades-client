@@ -49,7 +49,7 @@
 
 <script lang="ts">
   import { onMount } from "svelte";
-  import { DeleteProduct, GetProduct, SearchProducts } from "$lib/services/product";
+  import { DeleteProduct, SearchProducts } from "$lib/services/product";
   import type Product from "$lib/models/product/product";
   import PrimaryButton from "./buttons/PrimaryButton.svelte";
   import CreateProductModal from "./CreateProductModal.svelte";
@@ -83,7 +83,7 @@
     });
   }
 
-  function deleteProduct(id: number) {
+  function deleteProduct(id: string) {
     DeleteProduct(id).then(() => {
       updateProducts();
     });

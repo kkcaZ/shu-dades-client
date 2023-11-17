@@ -1,3 +1,3 @@
 export default interface RequestById {
-	id: number;
+	id: string;
 }

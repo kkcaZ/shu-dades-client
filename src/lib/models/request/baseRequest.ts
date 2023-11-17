@@ -1,6 +1,10 @@
 export interface BaseRequest {
-  body: any;
-  headers: any;
-  route: string;
-  type: string;
+	body: any;
+	headers: Headers;
+	route: string;
+	type: string;
 }
+
+type Headers = {
+	[key: string]: string;
+};
