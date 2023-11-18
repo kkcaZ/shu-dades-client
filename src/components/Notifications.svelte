@@ -135,6 +135,8 @@
 
     .notification p {
         flex-grow: 1;
+        margin: 0;
+        padding: .5rem;
     }
 
     .notification:last-child {

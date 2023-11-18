@@ -1,7 +1,7 @@
 <script>
-  import { Publish } from "$lib/services/broadcast";
+  import BroadcastMessage from "../../components/BroadcastMessage.svelte";
 </script>
 
 <h1>Dashboard</h1>
 
-<button on:click={() => Publish("Hello world!")}>Say hello!</button>
+<BroadcastMessage />

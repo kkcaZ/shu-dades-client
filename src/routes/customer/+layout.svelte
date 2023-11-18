@@ -13,7 +13,7 @@
   import PrimaryButton from "../../components/buttons/PrimaryButton.svelte";
   import { token } from "$lib/state/tokenStore";
   import { goto } from "$app/navigation";
-  import Notifications from "../../components/buttons/Notifications.svelte";
+  import Notifications from "../../components/Notifications.svelte";
 
   function logout() {
     token.set("");
