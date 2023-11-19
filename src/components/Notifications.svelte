@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { newNotification } from "$lib/state/notifStore";
+  import { newNotification } from "$lib/state/eventStore";
   import { DeleteNotification, GetNotifications } from "$lib/services/notification";
   import type Notif from "$lib/models/notification/notif";
 

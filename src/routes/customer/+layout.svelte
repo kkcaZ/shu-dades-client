@@ -1,6 +1,7 @@
 <nav>
-  <h2>stox</h2>
-  <h2 class="header">Customer Dashboard</h2>
+  <a href="/customer" class="logo">stox</a>
+  <a href="/customer">Products</a>
+  <a href="/customer/chat">Chat</a>
   <Notifications />
   <PrimaryButton on:click={logout}>Log out</PrimaryButton>
 </nav>
@@ -10,12 +11,14 @@
 </main>
 
 <script>
-  import PrimaryButton from "../../components/buttons/PrimaryButton.svelte";
-  import { token } from "$lib/state/tokenStore";
+  import PrimaryButton from "../../components/buttons/Button.svelte";
+  import { token } from "$lib/state/authStore";
   import { goto } from "$app/navigation";
   import Notifications from "../../components/Notifications.svelte";
+  import { RemoveBroadcastUser } from "$lib/services/broadcast";
 
   function logout() {
+    RemoveBroadcastUser();
     token.set("");
     goto("/");
   }
@@ -27,21 +30,32 @@
         width: 100%;
         padding: 1rem;
         background-color: var(--primary-color);
-        color: white;
         align-items: center;
+        color: white;
     }
 
-    nav h2 {
-        margin: 0;
+    nav .logo {
+        font-size: 1rem;
+        font-weight: bold;
     }
 
-    nav .header {
-        margin-inline: auto;
+    nav a {
+        padding: 1rem;
+        cursor: pointer;
+        text-decoration: none;
+        color: white;
+    }
+
+    nav a:last-of-type {
+        margin-right: auto;
+    }
+
+    nav a:hover {
+        opacity: 0.6;
     }
 
     main {
         background-color: var(--primary-color);
-        min-height: calc(100vh - 4.4rem);
         color: white;
     }
 </style>

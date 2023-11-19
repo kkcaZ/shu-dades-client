@@ -3,7 +3,7 @@ import type { BaseRequest } from '$lib/models/request/baseRequest';
 import { invoke } from '@tauri-apps/api/tauri';
 import type { BaseResponse } from '$lib/models/request/baseResponse';
 import type { ErrorResponse } from '$lib/models/request/errorResponse';
-import { token } from '$lib/state/tokenStore';
+import { token } from '$lib/state/authStore';
 import type NotificationListResponse from '$lib/models/notification/notificationListResponse';
 import type Notif from '$lib/models/notification/notif';
 

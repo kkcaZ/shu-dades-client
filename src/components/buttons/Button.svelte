@@ -1,5 +1,7 @@
 <script>
   export let disabled = false;
+  export let color = "secondary";
+  export let style = "";
 
   import { createEventDispatcher } from "svelte";
 
@@ -10,14 +12,13 @@
   }
 </script>
 
-<button on:click={onClick} disabled="{disabled}">
+<button on:click={onClick} disabled="{disabled}" style="background: var(--{color}-color); {style}">
   <slot />
 </button>
 
 <style>
     button {
         display: block;
-        background: var(--secondary-color);
         border: none;
         border-radius: 4px;
         color: white;

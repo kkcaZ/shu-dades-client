@@ -1,10 +1,12 @@
 <script>
   import NavButton from "../../components/buttons/NavButton.svelte";
   import { goto } from "$app/navigation";
-  import { token } from "$lib/state/tokenStore";
+  import { token } from "$lib/state/authStore";
   import { onMount } from "svelte";
+  import { RemoveBroadcastUser } from "$lib/services/broadcast";
 
   function logout() {
+    RemoveBroadcastUser();
     token.set("");
     goto("/");
   }
@@ -20,6 +22,7 @@
   <nav>
     <NavButton on:click={() => goto("/supplier")}>Dashboard</NavButton>
     <NavButton on:click={() => goto("/supplier/products")}>Products</NavButton>
+    <NavButton on:click={() => goto("/supplier/chat")}>Chat</NavButton>
     <NavButton on:click={logout}>Log out</NavButton>
   </nav>
   <main>
@@ -46,7 +49,8 @@
         background-color: var(--primary-color);
         color: white;
         height: 100vh;
-        overflow-y: auto;
+        max-height: 100vh;
+        overflow-y: hidden;
         display: flex;
         flex-direction: column;
     }

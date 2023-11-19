@@ -1,14 +1,10 @@
 <slot />
 
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
-  import { listen } from "@tauri-apps/api/event";
-  import { newNotification } from "$lib/state/notifStore";
+  import { Listen } from "$lib/services/broadcast";
 
   onMount(async () => {
-    await listen("broadcast_event", (event) => {
-      newNotification.set(`New notification received (eventId: ${Math.floor(Math.random() * 1000)})`);
-      console.log(event.payload);
-    });
+    await Listen();
   });
 </script>

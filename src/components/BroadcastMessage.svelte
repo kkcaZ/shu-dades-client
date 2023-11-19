@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { Publish } from "$lib/services/broadcast.js";
-  import PrimaryButton from "./buttons/PrimaryButton.svelte";
-  import PrimaryInput from "./PrimaryInput.svelte";
+  import { Publish } from "$lib/services/broadcast";
+  import PrimaryButton from "./buttons/Button.svelte";
+  import PrimaryInput from "./Input.svelte";
 
   let message = "";
 
@@ -19,4 +19,5 @@
 
 <h2>Broadcast a message to all customers</h2>
 <PrimaryInput bind:value={message} placeholder="Enter your message!" />
+<br />
 <PrimaryButton on:click={sendMessage}>Send Message</PrimaryButton>

@@ -51,8 +51,8 @@
   import { onMount } from "svelte";
   import { DeleteProduct, SearchProducts } from "$lib/services/product";
   import type Product from "$lib/models/product/product";
-  import PrimaryButton from "./buttons/PrimaryButton.svelte";
-  import CreateProductModal from "./CreateProductModal.svelte";
+  import PrimaryButton from "./buttons/Button.svelte";
+  import CreateProductModal from "./modals/CreateProductModal.svelte";
 
   export let controls: boolean = false;
 
