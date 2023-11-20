@@ -1,7 +1,7 @@
 import type BroadcastRequest from '$lib/models/broadcast/broadcastRequest';
 import { listen } from '@tauri-apps/api/event';
 import type BroadcastMessage from '$lib/models/broadcast/broadcastMessage';
-import { newMessage, newNotification } from '$lib/state/eventStore';
+import { newChat, newMessage, newNotification } from '$lib/state/eventStore';
 import type MessageBroadcastEvent from '$lib/models/chat/messageBroadcastEvent';
 import { SendRequest } from '$lib/helpers/requestHelper';
 
@@ -34,6 +34,9 @@ export async function Listen() {
 			case 'message':
 				let msg: MessageBroadcastEvent = JSON.parse(broadcastMessage.message);
 				newMessage.set(msg);
+				break;
+			case 'newChat':
+				newChat.set(broadcastMessage.message);
 				break;
 		}
 	});

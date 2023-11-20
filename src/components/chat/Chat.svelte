@@ -8,7 +8,9 @@
   import { GetChat, GetChatThumbnails, SendMessage } from "$lib/services/chat";
   import moment from "moment";
   import { userId } from "$lib/state/authStore";
-  import { newMessage } from "$lib/state/eventStore.js";
+  import { newChat, newMessage } from "$lib/state/eventStore.js";
+  import type Message from "$lib/models/chat/message";
+  import type MessageBroadcastEvent from "$lib/models/chat/messageBroadcastEvent";
 
   let createChatModalVisible: boolean = false;
   let chats: ChatThumbnail[] = [];
@@ -19,19 +21,8 @@
 
   onMount(() => {
     getChats();
-    newMessage.subscribe((message) => {
-      if (!message?.chatId) return;
-
-      if (message.chatId === selectedChat?.id) {
-        selectedChat.messages = [...selectedChat.messages, message];
-      }
-
-      const chat = chats.find((c) => c.chatId === message.chatId);
-      if (chat) {
-        chat.lastMessage = message;
-      }
-      updateOrderedChats();
-    });
+    newMessage.subscribe(onNewMessage);
+    newChat.subscribe(getChats);
   });
 
   function getChats() {
@@ -75,6 +66,20 @@
         messageInputElement.focus();
       }, 0);
     }
+  }
+
+  function onNewMessage(message: MessageBroadcastEvent) {
+    if (!message?.chatId) return;
+
+    if (message.chatId === selectedChat?.id) {
+      selectedChat.messages = [...selectedChat.messages, message];
+    }
+
+    const chat = chats.find((c) => c.chatId === message.chatId);
+    if (chat) {
+      chat.lastMessage = message;
+    }
+    updateOrderedChats();
   }
 </script>
 
