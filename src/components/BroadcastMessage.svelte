@@ -1,14 +1,14 @@
 <script lang="ts">
   import { Publish } from "$lib/services/broadcast";
-  import PrimaryButton from "./buttons/Button.svelte";
-  import PrimaryInput from "./Input.svelte";
+  import Input from "./Input.svelte";
+  import Button from "./buttons/Button.svelte";
 
   let message = "";
 
   function sendMessage() {
     if (!validateMessage()) return;
 
-    Publish(message);
+    Publish(message, "notification");
     message = "";
   }
 
@@ -18,6 +18,6 @@
 </script>
 
 <h2>Broadcast a message to all customers</h2>
-<PrimaryInput bind:value={message} placeholder="Enter your message!" />
+<Input bind:value={message} placeholder="Enter your message!" />
 <br />
-<PrimaryButton on:click={sendMessage}>Send Message</PrimaryButton>
+<Button on:click={sendMessage}>Send Message</Button>
