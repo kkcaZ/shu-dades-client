@@ -1,8 +1,4 @@
-import type { BaseRequest } from '$lib/models/request/baseRequest';
 import type CreateChatRequest from '$lib/models/chat/createChatRequest';
-import { invoke } from '@tauri-apps/api/tauri';
-import type { BaseResponse } from '$lib/models/request/baseResponse';
-import type { ErrorResponse } from '$lib/models/request/errorResponse';
 import { token, userId } from '$lib/state/authStore';
 import type ChatThumbnail from '$lib/models/chat/chatThumbnail';
 import type ChatThumbnailResponse from '$lib/models/chat/chatThumbnailResponse';

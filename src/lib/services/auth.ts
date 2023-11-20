@@ -1,8 +1,4 @@
-import { invoke } from '@tauri-apps/api/tauri';
 import type { AuthRequest } from '$lib/models/auth/auth';
-import type { BaseRequest } from '$lib/models/request/baseRequest';
-import type { BaseResponse } from '$lib/models/request/baseResponse';
-import type { ErrorResponse } from '$lib/models/request/errorResponse';
 import type { AuthResponse } from '$lib/models/auth/authResponse';
 import type UserClaim from '$lib/models/auth/userClaim';
 import type UserInfo from '$lib/models/auth/userInfo';
