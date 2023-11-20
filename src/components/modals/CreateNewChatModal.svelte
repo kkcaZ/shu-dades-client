@@ -6,6 +6,7 @@
   import { userId } from "$lib/state/authStore";
   import Button from "../buttons/Button.svelte";
   import { CreateChat } from "$lib/services/chat";
+  import Input from "../Input.svelte";
 
   export let visible: boolean;
 
@@ -14,6 +15,7 @@
   let users: UserInfo[] = [];
   let participants: UserInfo[] = [];
   let potentialParticipants: UserInfo[] = [];
+  let searchQuery: string = "";
 
   onMount(() => {
     GetUsers().then(res => {
@@ -28,7 +30,9 @@
   }
 
   function updatePotentialParticipants() {
-    potentialParticipants = users.filter(user => !participants.includes(user) && user.id != $userId);
+    potentialParticipants = users.filter(user => !participants.includes(user)
+      && user.id != $userId
+      && user.username.toLowerCase().includes(searchQuery.toLowerCase()));
   }
 
   function createChat() {
@@ -54,17 +58,21 @@
         {/each}
       {/if}
     </div>
-    <div class="selections">
-      {#each potentialParticipants as user}
-        <div class="user-select">
-          <p>{user.username}</p>
-          <img src="/icons/plus.svg" alt="add" on:click={() => addParticipant(user)} />
-        </div>
-      {/each}
-    </div>
-    <Button disabled="{participants.length === 0}" on:click={createChat}>Create
-      Chat
-    </Button>
+    <Input bind:value={searchQuery} placeholder="Search users..." style="margin-bottom: 1rem;"
+           on:input={updatePotentialParticipants} />
+    {#if potentialParticipants.length}
+      <div class="selections">
+        {#each potentialParticipants as user}
+          <div class="user-select">
+            <p>{user.username}</p>
+            <img src="/icons/plus.svg" alt="add" on:click={() => addParticipant(user)} />
+          </div>
+        {/each}
+      </div>
+    {:else}
+      <p class="no-users">No users found...</p>
+    {/if}
+    <Button disabled="{participants.length === 0}" on:click={createChat}>Create Chat</Button>
   </div>
 </ModalContainer>
 
@@ -119,5 +127,10 @@
 
     .user-select img:hover {
         opacity: 0.6;
+    }
+
+    .no-users {
+        text-align: center;
+        margin-bottom: 2rem;
     }
 </style>

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
+
   export let placeholder: string = "";
   export let value: string = "";
   export let style: string = "";
@@ -6,6 +8,7 @@
   export let type: string = "text";
   export let inputElement: HTMLInputElement;
 
+  const dispatch = createEventDispatcher();
   const inputAttributes = {
     placeholder,
     style: `background-color: var(--${color}-color); ${style}`,
@@ -13,7 +16,10 @@
   };
 </script>
 
-<input bind:value={value} bind:this={inputElement} {...inputAttributes} />
+<input bind:value={value}
+       bind:this={inputElement}
+       on:input={(e) => dispatch("input", e)}
+       {...inputAttributes} />
 
 <style>
     input {
