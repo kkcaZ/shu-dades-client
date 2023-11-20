@@ -25,7 +25,7 @@
     <p>{product.quantity}</p>
     {#if controls}
       <div class="actions">
-        <span><img src="/icons/edit.svg" alt="edit" /></span>
+        <span on:click={() => editProduct(product)}><img src="/icons/edit.svg" alt="edit" /></span>
         <span on:click={() => deleteProduct(product.id)}><img src="/icons/delete.svg" alt="delete" /></span>
       </div>
     {/if}
@@ -45,7 +45,11 @@
   </PrimaryButton>
 </div>
 
-<CreateProductModal bind:visible={createProductModalVisible} on:created={updateProducts} />
+{#if controls}
+  <CreateProductModal bind:visible={createProductModalVisible} on:created={updateProducts} />
+  <UpdateProductModal bind:visible={updateProductModalVisible} bind:product={selectedProduct}
+                      on:updated={updateProducts} />
+{/if}
 
 <script lang="ts">
   import { onMount } from "svelte";
@@ -53,6 +57,7 @@
   import type Product from "$lib/models/product/product";
   import PrimaryButton from "./buttons/Button.svelte";
   import CreateProductModal from "./modals/CreateProductModal.svelte";
+  import UpdateProductModal from "./modals/UpdateProductModal.svelte";
 
   export let controls: boolean = false;
 
@@ -61,7 +66,9 @@
   let sort = "name";
   let sortDirection = "asc";
   let products: Product[] = [];
+  let selectedProduct: Product;
   let createProductModalVisible = false;
+  let updateProductModalVisible = false;
 
   onMount(() => {
     updateProducts();
@@ -81,6 +88,11 @@
     SearchProducts(pageNumber, pageSize, sort, sortDirection).then((p) => {
       products = p;
     });
+  }
+
+  function editProduct(product: Product) {
+    selectedProduct = product;
+    updateProductModalVisible = true;
   }
 
   function deleteProduct(id: string) {

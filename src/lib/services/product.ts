@@ -45,3 +45,7 @@ export async function DeleteProduct(id: string): Promise<void> {
 
 	await SendRequest(body, 'DELETE', '/product');
 }
+
+export async function UpdateProduct(product: Product) {
+	await SendRequest(product, 'PUT', '/product');
+}
