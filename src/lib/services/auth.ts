@@ -7,6 +7,7 @@ import type { AuthResponse } from '$lib/models/auth/authResponse';
 import type UserClaim from '$lib/models/auth/userClaim';
 import type UserInfo from '$lib/models/auth/userInfo';
 import type UserListResponse from '$lib/models/auth/userListResponse';
+import { SendRequest } from '$lib/helpers/requestHelper';
 
 export async function Authenticate(username: string, password: string): Promise<UserClaim> {
 	let body: AuthRequest = {
@@ -14,41 +15,13 @@ export async function Authenticate(username: string, password: string): Promise<
 		password: password
 	};
 
-	let request: BaseRequest = {
-		body: body,
-		type: 'POST',
-		route: '/auth',
-		headers: {}
-	};
-
-	let response = await invoke('send_tcp_message', { message: JSON.stringify(request) });
-	let parsedResponse = JSON.parse(response as string);
-
-	if ((parsedResponse as BaseResponse).statusCode != 200) {
-		let errorResponse = parsedResponse as ErrorResponse;
-		throw new Error(errorResponse.message);
-	}
-
-	let successResponse = parsedResponse as AuthResponse;
-	return successResponse.userClaim;
+	const response = await SendRequest(body, 'POST', '/auth');
+	let authResponse = response as AuthResponse;
+	return authResponse.userClaim;
 }
 
 export async function GetUsers(): Promise<UserInfo[]> {
-	let request: BaseRequest = {
-		body: {},
-		type: 'GET',
-		route: '/auth/users',
-		headers: {}
-	};
-
-	let response = await invoke('send_tcp_message', { message: JSON.stringify(request) });
-	let parsedResponse = JSON.parse(response as string);
-
-	if ((parsedResponse as BaseResponse).statusCode != 200) {
-		let errorResponse = parsedResponse as ErrorResponse;
-		throw new Error(errorResponse.message);
-	}
-
-	let successResponse = parsedResponse as UserListResponse;
-	return successResponse.users;
+	const response = await SendRequest({}, 'GET', '/auth/users');
+	let userListResponse = response as UserListResponse;
+	return userListResponse.users;
 }

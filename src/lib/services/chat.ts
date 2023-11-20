@@ -10,6 +10,7 @@ import type Chat from '$lib/models/chat/chat';
 import type RequestById from '$lib/models/request/requestById';
 import type ChatResponse from '$lib/models/chat/chatResponse';
 import type SendMessageRequest from '$lib/models/chat/sendMessageRequest';
+import { SendRequest } from '$lib/helpers/requestHelper';
 
 export async function CreateChat(participants: string[]) {
 	userId.subscribe((value) => {
@@ -20,20 +21,7 @@ export async function CreateChat(participants: string[]) {
 		userIds: participants
 	};
 
-	let request: BaseRequest = {
-		body: body,
-		type: 'POST',
-		route: '/chat',
-		headers: {}
-	};
-
-	let response = await invoke('send_tcp_message', { message: JSON.stringify(request) });
-	let parsedResponse = JSON.parse(response as string);
-
-	if ((parsedResponse as BaseResponse).statusCode != 200) {
-		let errorResponse = parsedResponse as ErrorResponse;
-		throw new Error(errorResponse.message);
-	}
+	await SendRequest(body, 'POST', '/chat');
 }
 
 export async function GetChatThumbnails(): Promise<ChatThumbnail[]> {
@@ -42,83 +30,26 @@ export async function GetChatThumbnails(): Promise<ChatThumbnail[]> {
 		t = value;
 	});
 
-	let request: BaseRequest = {
-		body: {},
-		type: 'GET',
-		route: '/chat/thumbnails',
-		headers: {
-			Authorization: t
-		}
-	};
-
-	let response = await invoke('send_tcp_message', { message: JSON.stringify(request) });
-	let parsedResponse = JSON.parse(response as string);
-
-	if ((parsedResponse as BaseResponse).statusCode != 200) {
-		let errorResponse = parsedResponse as ErrorResponse;
-		throw new Error(errorResponse.message);
-	}
-
-	let successResponse = parsedResponse as ChatThumbnailResponse;
-	return successResponse.chats;
+	const response = await SendRequest({}, 'GET', '/chat/thumbnails');
+	let chatThumbnailResponse = response as ChatThumbnailResponse;
+	return chatThumbnailResponse.chats;
 }
 
 export async function GetChat(chatId: string): Promise<Chat> {
-	let t: string = '';
-	token.subscribe((value) => {
-		t = value;
-	});
-
 	let body: RequestById = {
 		id: chatId
 	};
 
-	let request: BaseRequest = {
-		body: body,
-		type: 'GET',
-		route: '/chat',
-		headers: {
-			Authorization: t
-		}
-	};
-
-	let response = await invoke('send_tcp_message', { message: JSON.stringify(request) });
-	let parsedResponse = JSON.parse(response as string);
-
-	if ((parsedResponse as BaseResponse).statusCode != 200) {
-		let errorResponse = parsedResponse as ErrorResponse;
-		throw new Error(errorResponse.message);
-	}
-
-	let successResponse = parsedResponse as ChatResponse;
-	return successResponse.chat;
+	const response = await SendRequest(body, 'GET', '/chat');
+	let chatResponse = response as ChatResponse;
+	return chatResponse.chat;
 }
 
 export async function SendMessage(chatId: string, message: string) {
-	let t: string = '';
-	token.subscribe((value) => {
-		t = value;
-	});
-
 	let body: SendMessageRequest = {
 		chatId: chatId,
 		message: message
 	};
 
-	let request: BaseRequest = {
-		body: body,
-		type: 'POST',
-		route: '/chat/message',
-		headers: {
-			Authorization: t
-		}
-	};
-
-	let response = await invoke('send_tcp_message', { message: JSON.stringify(request) });
-	let parsedResponse = JSON.parse(response as string);
-
-	if ((parsedResponse as BaseResponse).statusCode != 200) {
-		let errorResponse = parsedResponse as ErrorResponse;
-		throw new Error(errorResponse.message);
-	}
+	await SendRequest(body, 'POST', '/chat/message');
 }

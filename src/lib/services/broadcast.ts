@@ -8,6 +8,7 @@ import { listen } from '@tauri-apps/api/event';
 import type BroadcastMessage from '$lib/models/broadcast/broadcastMessage';
 import { newMessage, newNotification } from '$lib/state/eventStore';
 import type MessageBroadcastEvent from '$lib/models/chat/messageBroadcastEvent';
+import { SendRequest } from '$lib/helpers/requestHelper';
 
 export async function Publish(message: string, type: string) {
 	let body: BroadcastRequest = {
@@ -15,68 +16,15 @@ export async function Publish(message: string, type: string) {
 		type: type
 	};
 
-	let request: BaseRequest = {
-		body: body,
-		type: 'POST',
-		route: '/broadcast',
-		headers: {}
-	};
-
-	let response = await invoke('send_tcp_message', { message: JSON.stringify(request) });
-	let parsedResponse = JSON.parse(response as string);
-
-	if ((parsedResponse as BaseResponse).statusCode != 200) {
-		let errorResponse = parsedResponse as ErrorResponse;
-		throw new Error(errorResponse.message);
-	}
+	await SendRequest(body, 'POST', '/broadcast');
 }
 
 export async function RegisterBroadcastUser() {
-	let t: string = '';
-	token.subscribe((value) => {
-		t = value;
-	});
-
-	let request: BaseRequest = {
-		body: {},
-		type: 'POST',
-		route: '/broadcast/user',
-		headers: {
-			Authorization: t
-		}
-	};
-
-	let response = await invoke('send_tcp_message', { message: JSON.stringify(request) });
-	let parsedResponse = JSON.parse(response as string);
-
-	if ((parsedResponse as BaseResponse).statusCode != 200) {
-		let errorResponse = parsedResponse as ErrorResponse;
-		throw new Error(errorResponse.message);
-	}
+	await SendRequest({}, 'POST', '/broadcast/user');
 }
 
 export async function RemoveBroadcastUser() {
-	let t: string = '';
-	token.subscribe((value) => {
-		t = value;
-	});
-
-	let request: BaseRequest = {
-		body: {},
-		type: 'DELETE',
-		route: '/broadcast/user',
-		headers: {
-			Authorization: t
-		}
-	};
-
-	let response = await invoke('send_tcp_message', { message: JSON.stringify(request) });
-	let parsedResponse = JSON.parse(response as string);
-
-	if ((parsedResponse as BaseResponse).statusCode != 200) {
-		let errorResponse = parsedResponse as ErrorResponse;
-		throw new Error(errorResponse.message);
-	}
+	await SendRequest({}, 'DELETE', '/broadcast/user');
 }
 
 export async function Listen() {
