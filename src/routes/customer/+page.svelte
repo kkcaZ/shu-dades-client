@@ -3,7 +3,7 @@
 </script>
 
 <div class="product-container">
-  <ProductView />
+  <ProductView role="customer" />
 </div>
 
 <style>

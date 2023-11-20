@@ -5,6 +5,9 @@ import type SearchRequest from '$lib/models/request/searchRequest';
 import type ProductListResponse from '$lib/models/product/productListResponse';
 import type CreateProductRequest from '$lib/models/product/createProductRequest';
 import { SendRequest } from '$lib/helpers/requestHelper';
+import type ProductSubscriptionRequest from '$lib/models/product/productSubscriptionRequest';
+import type ProductSubscription from '$lib/models/product/productSubscription';
+import type ProductSubscriptionListResponse from '$lib/models/product/productSubscriptionListResponse';
 
 export async function GetProduct(id: string): Promise<Product> {
 	const body: RequestById = {
@@ -48,4 +51,28 @@ export async function DeleteProduct(id: string): Promise<void> {
 
 export async function UpdateProduct(product: Product) {
 	await SendRequest(product, 'PUT', '/product');
+}
+
+export async function SubscribeToProduct(productId: string, subType: string) {
+	const body: ProductSubscriptionRequest = {
+		productId: productId,
+		subType: subType
+	};
+
+	await SendRequest(body, 'POST', '/product/subscribe');
+}
+
+export async function UnsubscribeFromProduct(productId: string, subType: string) {
+	const body: ProductSubscriptionRequest = {
+		productId: productId,
+		subType: subType
+	};
+
+	await SendRequest(body, 'POST', '/product/unsubscribe');
+}
+
+export async function GetProductSubscriptions(): Promise<ProductSubscription[]> {
+	const response = await SendRequest({}, 'GET', '/product/subscriptions');
+	let productListResponse = response as ProductSubscriptionListResponse;
+	return productListResponse.subscriptions;
 }

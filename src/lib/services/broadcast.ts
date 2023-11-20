@@ -5,15 +5,6 @@ import { newChat, newMessage, newNotification } from '$lib/state/eventStore';
 import type MessageBroadcastEvent from '$lib/models/chat/messageBroadcastEvent';
 import { SendRequest } from '$lib/helpers/requestHelper';
 
-export async function Publish(message: string, type: string) {
-	let body: BroadcastRequest = {
-		message: message,
-		type: type
-	};
-
-	await SendRequest(body, 'POST', '/broadcast');
-}
-
 export async function RegisterBroadcastUser() {
 	await SendRequest({}, 'POST', '/broadcast/user');
 }

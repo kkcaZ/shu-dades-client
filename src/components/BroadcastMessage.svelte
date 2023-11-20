@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { Publish } from "$lib/services/broadcast";
   import Input from "./Input.svelte";
   import Button from "./buttons/Button.svelte";
+  import { AddAllNotification } from "$lib/services/notification";
 
   let message = "";
 
   function sendMessage() {
     if (!validateMessage()) return;
 
-    Publish(message, "notification");
+    AddAllNotification(message);
     message = "";
   }
 

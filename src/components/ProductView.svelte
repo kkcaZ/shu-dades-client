@@ -1,6 +1,6 @@
 <div class="filters">
   <h1>Products</h1>
-  {#if controls}
+  {#if role === "supplier"}
     <PrimaryButton on:click={() => createProductModalVisible = true}>Create new product</PrimaryButton>
   {/if}
   <p>Sort by:</p>
@@ -14,19 +14,31 @@
   </select>
 </div>
 
-<div class="table" data-controls="{controls}">
+<div class="table" data-role="{role}">
   <p>Name</p>
   <p>Quantity</p>
-  {#if controls}
+  {#if role === "supplier" }
     <p>Actions</p>
+  {:else}
+    <p>Notifications</p>
   {/if}
-  {#each products as product}
+  {#each customerProducts as product}
     <p>{product.name}</p>
     <p>{product.quantity}</p>
-    {#if controls}
+    {#if role === "supplier"}
       <div class="actions">
         <span on:click={() => editProduct(product)}><img src="/icons/edit.svg" alt="edit" /></span>
         <span on:click={() => deleteProduct(product.id)}><img src="/icons/delete.svg" alt="delete" /></span>
+      </div>
+    {/if}
+    {#if role === "customer"}
+      <div class="customer-actions">
+        <Checkbox label="Daily" id="daily-checkbox-{product.id}"
+                  on:change={(e) => subscriptionChecked(e, product.id, "daily")}
+                  bind:checked={product.dailySubscription} />
+        <Checkbox label="Hourly" id="hourly-checkbox-{product.id}"
+                  on:change={(e) => subscriptionChecked(e, product.id, "hourly")}
+                  bind:checked={product.hourlySubscription} />
       </div>
     {/if}
   {/each}
@@ -45,7 +57,7 @@
   </PrimaryButton>
 </div>
 
-{#if controls}
+{#if role === "supplier"}
   <CreateProductModal bind:visible={createProductModalVisible} on:created={updateProducts} />
   <UpdateProductModal bind:visible={updateProductModalVisible} bind:product={selectedProduct}
                       on:updated={updateProducts} />
@@ -53,19 +65,30 @@
 
 <script lang="ts">
   import { onMount } from "svelte";
-  import { DeleteProduct, SearchProducts } from "$lib/services/product";
+  import {
+    DeleteProduct,
+    GetProductSubscriptions,
+    SearchProducts,
+    SubscribeToProduct,
+    UnsubscribeFromProduct
+  } from "$lib/services/product";
   import type Product from "$lib/models/product/product";
   import PrimaryButton from "./buttons/Button.svelte";
   import CreateProductModal from "./modals/CreateProductModal.svelte";
   import UpdateProductModal from "./modals/UpdateProductModal.svelte";
+  import Checkbox from "./Checkbox.svelte";
+  import type ProductSubscription from "$lib/models/product/productSubscription";
+  import type CustomerProduct from "$lib/models/product/customerProduct";
 
-  export let controls: boolean = false;
+  export let role: string = "";
 
   let pageNumber = 1;
   let pageSize = 15;
   let sort = "name";
   let sortDirection = "asc";
   let products: Product[] = [];
+  let customerProducts: CustomerProduct[] = [];
+  let subscriptions: ProductSubscription[] = [];
   let selectedProduct: Product;
   let createProductModalVisible = false;
   let updateProductModalVisible = false;
@@ -85,8 +108,19 @@
   }
 
   function updateProducts() {
-    SearchProducts(pageNumber, pageSize, sort, sortDirection).then((p) => {
-      products = p;
+    GetProductSubscriptions().then((s) => {
+      SearchProducts(pageNumber, pageSize, sort, sortDirection).then((p) => {
+        products = p;
+        customerProducts = products.map((product) => {
+          const subscriptions = s?.filter((sub) => sub.productId === product.id);
+          const customerProduct: CustomerProduct = {
+            ...product,
+            dailySubscription: subscriptions?.find((sub) => sub.subType == "daily") != undefined,
+            hourlySubscription: subscriptions?.find((sub) => sub.subType == "hourly") != undefined
+          };
+          return customerProduct;
+        });
+      });
     });
   }
 
@@ -99,6 +133,14 @@
     DeleteProduct(id).then(() => {
       updateProducts();
     });
+  }
+
+  function subscriptionChecked(event: any, id: string, type: string) {
+    if (event.detail) {
+      SubscribeToProduct(id, type);
+    } else {
+      UnsubscribeFromProduct(id, type);
+    }
   }
 </script>
 
@@ -132,15 +174,8 @@
         margin-bottom: 1rem;
         height: 100%;
         overflow: auto;
-        grid-template-rows: repeat(15, 1fr)
-    }
-
-    .table[data-controls="true"] {
+        grid-template-rows: repeat(15, 1fr);
         grid-template-columns: 10fr 2fr 1fr;
-    }
-
-    .table[data-controls="false"] {
-        grid-template-columns: 5fr 1fr;
     }
 
     .table > p {
@@ -149,7 +184,6 @@
         background-color: #20252E;
         color: white;
         user-select: none;
-        height: 3rem;
         display: flex;
         align-items: center;
     }
@@ -176,5 +210,12 @@
     .actions > span > img {
         width: 1.25rem;
         height: 1.25rem;
+    }
+
+    .customer-actions {
+        display: flex;
+        flex-direction: column;
+        background-color: var(--secondary-color);
+        padding: .5rem 1rem;
     }
 </style>
