@@ -8,7 +8,9 @@
 
 <style>
     .chat-container {
-        height: 100%;
+        display: flex;
+        flex-direction: column;
+        height: 90vh;
         padding: 1rem;
     }
 </style>
