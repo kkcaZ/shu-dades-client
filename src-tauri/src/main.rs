@@ -1,9 +1,11 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::Manager;
 mod broadcast;
+mod encryption;
+use tauri::Manager;
 use broadcast::{Message, BroadcastSubscribeBody};
+use encryption::{decrypt, encrypt};
 use std::io::prelude::*;
 use std::net::{TcpStream, TcpListener};
 use std::sync::{Mutex, Once};
@@ -75,10 +77,10 @@ async fn listen_for_connections<R: tauri::Runtime>(manager: &impl Manager<R>) {
             Ok((mut stream, _)) => {
                 let mut buffer = [0; 4096];
                 stream.read(&mut buffer).unwrap();
-                let message = &String::from_utf8_lossy(&buffer[..]);
-                let message = message.trim_end_matches(char::from(0));
-                println!("Received message: {}", message);
-                manager.emit_all("broadcast_event", message).unwrap();
+                let data: Vec<u8> = remove_trailing_nulls(&buffer);
+                let decrypted = decrypt(&data).unwrap();
+                println!("Received message: {}", decrypted);
+                manager.emit_all("broadcast_event", decrypted).unwrap();
 
                 let _ = stream.shutdown(std::net::Shutdown::Both);
             }
@@ -96,13 +98,19 @@ fn send_tcp_message(message: String) -> String {
     let mutex = unsafe { GLOBAL_TCP_STREAM.as_ref().expect("TcpStream not initialized") };
     let mut stream = mutex.lock().expect("Failed to lock TcpStream");
 
-    stream.write(&message.as_bytes()).unwrap();
+    let encrypted = encrypt(message).unwrap();
+    stream.write(&encrypted).unwrap();
 
     let mut buffer = [0; 4096];
     stream.read(&mut buffer).unwrap();
-    let response = &String::from_utf8_lossy(&buffer[..]);
-    let response = response.trim_end_matches(char::from(0));
-    println!("Response: {}", response);
+    let data: Vec<u8> = remove_trailing_nulls(&buffer);
+    let decrypted = decrypt(&data).unwrap();
 
-    return response.to_string();
+    return decrypted.to_string();
+}
+
+fn remove_trailing_nulls(buffer: &[u8]) -> Vec<u8> {
+    let pos = buffer.iter().rev().position(|&x| x != 0).unwrap_or(buffer.len());
+    let length = buffer.len() - pos;
+    buffer[..length].to_vec()
 }
